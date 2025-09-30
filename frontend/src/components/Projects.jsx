@@ -5,10 +5,20 @@ import { projects, projectCategories } from '../data/projects';
 
 const Projects = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedTechnology, setSelectedTechnology] = useState('all');
   
-  const filteredProjects = selectedCategory === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === selectedCategory);
+  // Get all unique technologies from projects
+  const allTechnologies = [...new Set(projects.flatMap(project => project.technologies))];
+  const technologyFilters = [
+    { name: "All Tech", value: "all" },
+    ...allTechnologies.slice(0, 8).map(tech => ({ name: tech, value: tech })) // Show top 8 technologies
+  ];
+  
+  const filteredProjects = projects.filter(project => {
+    const categoryMatch = selectedCategory === 'all' || project.category === selectedCategory;
+    const technologyMatch = selectedTechnology === 'all' || project.technologies.includes(selectedTechnology);
+    return categoryMatch && technologyMatch;
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -51,26 +61,117 @@ const Projects = () => {
       </motion.div>
 
       {/* Filter Buttons */}
-      <motion.div 
-        className="flex flex-wrap justify-center gap-4 mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        viewport={{ once: true }}
-      >
-        {projectCategories.map((category) => (
-          <button
-            key={category.value}
-            onClick={() => setSelectedCategory(category.value)}
-            className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-              selectedCategory === category.value
-                ? 'bg-primary text-white shadow-lg transform scale-105'
-                : 'bg-surface text-text-secondary hover:bg-surface/80 hover:text-text-primary'
-            }`}
+      <div className="mb-12 space-y-6">
+        {/* Category Filters */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-lg font-semibold text-text-primary mb-4">Filter by Category</h3>
+          <div className="flex flex-wrap justify-center gap-3">
+            {projectCategories.map((category) => (
+              <button
+                key={category.value}
+                onClick={() => {
+                  setSelectedCategory(category.value);
+                  setSelectedTechnology('all'); // Reset technology filter when category changes
+                }}
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                  selectedCategory === category.value
+                    ? 'bg-primary text-white shadow-lg transform scale-105'
+                    : 'bg-surface text-text-secondary hover:bg-surface/80 hover:text-text-primary'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Technology Filters */}
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-lg font-semibold text-text-primary mb-4">Filter by Technology</h3>
+          <div className="flex flex-wrap justify-center gap-2">
+            {technologyFilters.map((tech) => (
+              <button
+                key={tech.value}
+                onClick={() => setSelectedTechnology(tech.value)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedTechnology === tech.value
+                    ? 'bg-secondary text-white shadow-lg transform scale-105'
+                    : 'bg-surface/50 text-text-secondary hover:bg-surface hover:text-text-primary border border-border'
+                }`}
+              >
+                {tech.name}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Active Filters Display */}
+        {(selectedCategory !== 'all' || selectedTechnology !== 'all') && (
+          <motion.div 
+            className="flex flex-wrap justify-center gap-2 items-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
           >
-            {category.name}
-          </button>
-        ))}
+            <span className="text-text-secondary text-sm">Active filters:</span>
+            {selectedCategory !== 'all' && (
+              <span className="px-3 py-1 bg-primary/20 text-primary text-sm rounded-full flex items-center gap-2">
+                {selectedCategory}
+                <button 
+                  onClick={() => setSelectedCategory('all')}
+                  className="hover:text-white transition-colors"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            {selectedTechnology !== 'all' && (
+              <span className="px-3 py-1 bg-secondary/20 text-secondary text-sm rounded-full flex items-center gap-2">
+                {selectedTechnology}
+                <button 
+                  onClick={() => setSelectedTechnology('all')}
+                  className="hover:text-white transition-colors"
+                >
+                  ×
+                </button>
+              </span>
+            )}
+            <button 
+              onClick={() => {
+                setSelectedCategory('all');
+                setSelectedTechnology('all');
+              }}
+              className="text-text-secondary hover:text-accent text-sm underline"
+            >
+              Clear all
+            </button>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Results Counter */}
+      <motion.div 
+        className="text-center mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <p className="text-text-secondary">
+          Showing <span className="text-primary font-semibold">{filteredProjects.length}</span> of{' '}
+          <span className="text-text-primary font-semibold">{projects.length}</span> projects
+        </p>
       </motion.div>
 
       {/* Projects Grid */}
@@ -80,6 +181,7 @@ const Projects = () => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
+        key={`${selectedCategory}-${selectedTechnology}`} // Re-trigger animation on filter change
       >
         {filteredProjects.map((project) => (
           <motion.div
@@ -194,12 +296,24 @@ const Projects = () => {
       {filteredProjects.length === 0 && (
         <motion.div 
           className="text-center py-12"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           <FiCode className="text-4xl text-text-secondary mx-auto mb-4" />
-          <p className="text-text-secondary">No projects found in this category.</p>
+          <h3 className="text-xl font-semibold text-text-primary mb-2">No projects found</h3>
+          <p className="text-text-secondary mb-4">
+            No projects match your current filter criteria.
+          </p>
+          <button 
+            onClick={() => {
+              setSelectedCategory('all');
+              setSelectedTechnology('all');
+            }}
+            className="btn-secondary"
+          >
+            Clear Filters
+          </button>
         </motion.div>
       )}
     </div>
