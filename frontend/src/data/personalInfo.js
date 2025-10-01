@@ -5,7 +5,7 @@ export const personalInfo = {
   phone: "(+91) 9953666881",
   location: "India",
   linkedin: "-princekumar",
-  github: "prins-krai",
+  github: "prins-kraj",
   summary: "Passionate Associate Software Developer with expertise in full-stack development using modern technologies like React.js, Node.js, and MongoDB. Experienced in building scalable web applications, HRMS portals, and project management systems. Strong background in mentoring and teaching data structures and algorithms.",
   resumeUrl: "/resume/Prince_Kumar_Resume.pdf"
 };
