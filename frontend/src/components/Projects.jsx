@@ -46,22 +46,22 @@ const Projects = () => {
     <div className="w-full">
       {/* Section Header */}
       <motion.div 
-        className="text-center mb-12"
+        className="text-center mb-8 xs:mb-10 sm:mb-12"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
       >
-        <h2 className="text-4xl lg:text-5xl font-bold text-text-primary mb-4">
+        <h2 className="text-responsive-xl font-bold text-text-primary mb-3 xs:mb-4 px-4 xs:px-0">
           Featured <span className="text-gradient">Projects</span>
         </h2>
-        <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+        <p className="text-responsive-sm text-text-secondary max-w-2xl mx-auto px-4 xs:px-0">
           A showcase of my recent work, featuring full-stack applications built with modern technologies
         </p>
       </motion.div>
 
       {/* Filter Buttons */}
-      <div className="mb-12 space-y-6">
+      <div className="mb-8 xs:mb-10 sm:mb-12 space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Category Filters */}
         <motion.div 
           className="text-center"
@@ -70,8 +70,8 @@ const Projects = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
         >
-          <h3 className="text-lg font-semibold text-text-primary mb-4">Filter by Category</h3>
-          <div className="flex flex-wrap justify-center gap-3">
+          <h3 className="text-base xs:text-lg font-semibold text-text-primary mb-3 xs:mb-4 px-4 xs:px-0">Filter by Category</h3>
+          <div className="flex flex-wrap justify-center gap-2 xs:gap-3 px-4 xs:px-0">
             {projectCategories.map((category) => (
               <button
                 key={category.value}
@@ -79,11 +79,12 @@ const Projects = () => {
                   setSelectedCategory(category.value);
                   setSelectedTechnology('all'); // Reset technology filter when category changes
                 }}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                className={`px-3 py-2 xs:px-4 xs:py-2.5 sm:px-6 sm:py-3 rounded-full font-medium transition-all duration-300 text-sm xs:text-base touch-manipulation focus-visible-ring ${
                   selectedCategory === category.value
                     ? 'bg-primary text-white shadow-lg transform scale-105'
                     : 'bg-surface text-text-secondary hover:bg-surface/80 hover:text-text-primary'
                 }`}
+                aria-pressed={selectedCategory === category.value}
               >
                 {category.name}
               </button>
@@ -99,17 +100,18 @@ const Projects = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <h3 className="text-lg font-semibold text-text-primary mb-4">Filter by Technology</h3>
-          <div className="flex flex-wrap justify-center gap-2">
+          <h3 className="text-base xs:text-lg font-semibold text-text-primary mb-3 xs:mb-4 px-4 xs:px-0">Filter by Technology</h3>
+          <div className="flex flex-wrap justify-center gap-1.5 xs:gap-2 px-4 xs:px-0">
             {technologyFilters.map((tech) => (
               <button
                 key={tech.value}
                 onClick={() => setSelectedTechnology(tech.value)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`px-2.5 py-1.5 xs:px-3 xs:py-2 sm:px-4 sm:py-2 rounded-full text-xs xs:text-sm font-medium transition-all duration-300 touch-manipulation focus-visible-ring ${
                   selectedTechnology === tech.value
                     ? 'bg-secondary text-white shadow-lg transform scale-105'
                     : 'bg-surface/50 text-text-secondary hover:bg-surface hover:text-text-primary border border-border'
                 }`}
+                aria-pressed={selectedTechnology === tech.value}
               >
                 {tech.name}
               </button>
@@ -176,7 +178,7 @@ const Projects = () => {
 
       {/* Projects Grid */}
       <motion.div 
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        className="grid-responsive-1-2-3 gap-4 xs:gap-5 sm:gap-6 lg:gap-8"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"

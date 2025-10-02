@@ -9,6 +9,7 @@ import Education from './components/Education';
 import Achievements from './components/Achievements';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   useEffect(() => {
@@ -90,6 +91,7 @@ function App() {
       </main>
       
       <Footer />
+      <ScrollToTop showAfter={400} />
     </div>
   );
 }

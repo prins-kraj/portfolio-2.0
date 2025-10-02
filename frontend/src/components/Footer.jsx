@@ -5,12 +5,12 @@ import { personalInfo, socialLinks } from '../data/personalInfo';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
+  // const scrollToTop = () => {
+  //   window.scrollTo({
+  //     top: 0,
+  //     behavior: 'smooth'
+  //   });
+  // };
 
   const getIconComponent = (iconName) => {
     const icons = {
@@ -116,7 +116,7 @@ const Footer = () => {
 
         {/* Bottom Footer */}
         <div className="border-t border-border py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
             
             {/* Copyright */}
             <div className="text-text-secondary text-sm">
@@ -128,14 +128,14 @@ const Footer = () => {
             </div>
 
             {/* Back to Top Button */}
-            <button
+            {/* <button
               onClick={scrollToTop}
               className="flex items-center space-x-2 text-text-secondary hover:text-primary transition-all duration-300 group"
               aria-label="Back to top"
             >
               <span className="text-sm">Back to top</span>
               <FaArrowUp className="text-sm group-hover:-translate-y-1 transition-transform duration-300" />
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

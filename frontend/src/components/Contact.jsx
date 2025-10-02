@@ -208,17 +208,17 @@ const Contact = () => {
       className="max-w-6xl mx-auto"
     >
       {/* Section Header */}
-      <motion.div variants={itemVariants} className="text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-heading font-bold text-text-primary mb-4">
+      <motion.div variants={itemVariants} className="text-center mb-8 xs:mb-10 sm:mb-12">
+        <h2 className="text-responsive-xl font-heading font-bold text-text-primary mb-3 xs:mb-4 px-4 xs:px-0">
           Get In Touch
         </h2>
-        <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+        <p className="text-responsive-sm text-text-secondary max-w-2xl mx-auto px-4 xs:px-0">
           Have a project in mind or want to discuss opportunities? 
           I'd love to hear from you. Send me a message and I'll get back to you as soon as possible.
         </p>
       </motion.div>
 
-      <div className="grid lg:grid-cols-2 gap-12 items-start">
+      <div className="grid lg:grid-cols-2 gap-8 xs:gap-10 sm:gap-12 items-start">
         {/* Contact Form */}
         <motion.div variants={itemVariants}>
           <div className="bg-surface/50 backdrop-blur-sm rounded-2xl p-8 border border-border/20">
