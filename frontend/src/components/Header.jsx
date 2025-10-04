@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaDownload } from 'react-icons/fa';
 import { personalInfo } from '../data/personalInfo';
+import logo from '../assets/prince.png'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -65,9 +66,10 @@ const Header = () => {
                 e.preventDefault();
                 handleNavClick('#home');
               }}
-              className="text-lg xs:text-xl lg:text-2xl font-heading font-bold text-gradient hover:scale-105 transition-transform duration-300 focus-visible-ring rounded-md p-1 -m-1 touch-manipulation truncate"
+              className="text-lg xs:text-xl lg:text-2xl font-heading font-bold text-gradient hover:scale-105 transition-transform duration-300 focus-visible-ring rounded-md p-1 -m-1 touch-manipulation truncate flex flex-row items-center"
               aria-label="Go to home section"
             >
+              <img src={logo} alt="" className='w-8 h-8'/>
               {personalInfo.name.split(' ')[0]} {/* Show first name on mobile */}
               <span className="hidden xs:inline"> {personalInfo.name.split(' ').slice(1).join(' ')}</span>
             </a>
