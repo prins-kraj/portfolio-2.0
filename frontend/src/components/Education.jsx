@@ -70,7 +70,7 @@ const Education = () => {
               transition={{ duration: 0.3 }}
             >
               {/* Education Card */}
-              <div className="card hover:border-primary/50 text-left relative overflow-hidden">
+              <div className="card hover:border-primary/50 text-left relative overflow-hidden my-4">
                 {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full transform translate-x-16 -translate-y-16" />
                 
@@ -102,8 +102,8 @@ const Education = () => {
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <div className="text-white font-bold text-2xl">{edu.cgpa}</div>
-                      <div className="text-white/90 text-sm font-medium">CGPA</div>
+                      <div className="text-white font-bold text-2xl">{edu.grade.number}</div>
+                      <div className="text-white/90 text-sm font-medium">{edu.grade.type}</div>
                     </motion.div>
                   </div>
 

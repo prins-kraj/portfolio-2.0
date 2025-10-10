@@ -50,8 +50,9 @@ export const achievements = [
     color: "#FFD700",
     date: "2022 - Present",
     links: [
-      { name: "CodeChef Profile", url: "https://codechef.com/users/prince_kumar" },
-      { name: "Codeforces Profile", url: "https://codeforces.com/profile/prince_kumar" }
+      { name: "CodeChef Profile", url: "https://codechef.com/users/prince_9470" },
+      { name: "Codeforces Profile", url: "https://codeforces.com/profile/prins_kraj" },
+      { name: "LeetCode Profile", url: "https://leetcode.com/u/prins_kraj/" }
     ]
   },
   {
@@ -83,7 +84,7 @@ export const achievements = [
     color: "#2196F3",
     date: "2023 - Present",
     links: [
-      { name: "GitHub Portfolio", url: "https://github.com/prins-krai" }
+      { name: "GitHub Portfolio", url: "https://github.com/prins-kraj" }
     ]
   },
   {

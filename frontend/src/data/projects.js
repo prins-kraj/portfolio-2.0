@@ -5,7 +5,7 @@ export const projects = [
     description: "A comprehensive web application with user authentication (login and signup) that provides users the ability to upload, access, edit, and delete their notes securely in the cloud.",
     longDescription: "CloudNote is a full-stack note-taking application built with the MERN stack. It features secure user authentication, CRUD operations for notes, and a responsive design. The application uses JWT for authentication and bcrypt for password hashing, ensuring user data security.",
     technologies: ["React.js", "Node.js", "Express.js", "MongoDB", "Bootstrap", "JWT", "Bcrypt"],
-    githubUrl: "https://github.com/prins-krai/cloudnote",
+    githubUrl: "https://github.com/prins-kraj/cloudnote",
     liveUrl: null,
     image: "/images/projects/cloudnote.jpg",
     features: [
@@ -27,7 +27,7 @@ export const projects = [
     description: "A robust social media web application with comprehensive user authentication, post management, comments, likes, deletions, messaging, and friend interaction features.",
     longDescription: "Codial is a feature-rich social media platform that allows users to connect, share posts, interact through comments and likes, and communicate via real-time messaging. Built with Node.js and EJS templating, it includes Google OAuth integration and WebSocket-based chat functionality.",
     technologies: ["Node.js", "Express.js", "JavaScript", "EJS", "HTML", "MongoDB", "Socket.io", "Passport.js"],
-    githubUrl: "https://github.com/prins-krai/codial",
+    githubUrl: "https://github.com/prins-kraj/codial",
     liveUrl: null,
     image: "/images/projects/codial.jpg",
     features: [
@@ -51,7 +51,7 @@ export const projects = [
     description: "A dynamic news aggregation web application that fetches and displays the latest news updates from News API, categorized into general, technology, sports, business, health, entertainment, and science.",
     longDescription: "NewsNexus is a React-based news application that provides users with up-to-date news from various categories. It features infinite scrolling, category filtering, and a responsive design optimized for all devices. The app uses the News API to fetch real-time news data.",
     technologies: ["React.js", "Bootstrap", "News API", "React Router", "Axios"],
-    githubUrl: "https://github.com/prins-krai/newsnexus",
+    githubUrl: "https://github.com/prins-kraj/newsnexus",
     liveUrl: null,
     image: "/images/projects/newsnexus.jpg",
     features: [

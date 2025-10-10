@@ -43,15 +43,44 @@ export const education = [
   {
     id: 1,
     degree: "Bachelor of Technology (B.TECH)",
-    field: "Computer Science and Engineering",
-    institution: "Galgotias University",
+    field: "Electrical Engineering",
+    institution: "National Institute of Technology Agartala",
     duration: "2020 – 2024",
-    cgpa: "8.2",
-    location: "Greater Noida, India",
+    grade:{
+      number: "88.8",
+      type: "CGPA"
+    },
+    location: "Agartala, Tripura, India",
     achievements: [
       "Specialized in Software Development and Data Structures",
       "Active participant in coding competitions",
       "Member of Computer Science Society"
     ]
+  },
+  {
+    id: 2,
+    degree: "Intermediate (10+2)",
+    field: "PCM",
+    institution: "Vivekanand Mission School",
+    duration: "2018 – 2020",
+    grade:{
+      number: "88.8",
+      type: "%"
+    },
+    location: "Daudnagar, Aurangabad, Bihar",
+    achievements: []
+  },
+  {
+    id: 3,
+    degree: "Matric (10th)",
+    field: "General",
+    institution: "Vivekanand Mission School",
+    duration: "2016 – 2018",
+    grade:{
+      number: "89.2",
+      type: "%"
+    },
+    location: "Daudnagar, Aurangabad, Bihar",
+    achievements: []
   }
 ];
