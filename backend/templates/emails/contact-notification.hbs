@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Form Submission</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .header h1 {
+            color: #3b82f6;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            color: #64748b;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .field {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        .field-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .field-value {
+            color: #1f2937;
+            font-size: 16px;
+            word-wrap: break-word;
+        }
+        .message-field {
+            background-color: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+        .message-field .field-value {
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+        .metadata {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 1px solid #e5e7eb;
+        }
+        .metadata h3 {
+            color: #374151;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .metadata-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .metadata-value {
+            color: #374151;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        .reply-button {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 20px 0;
+            transition: background-color 0.2s;
+        }
+        .reply-button:hover {
+            background-color: #2563eb;
+        }
+        .priority-high {
+            border-left-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .priority-high .field-label {
+            color: #dc2626;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .metadata-item {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 New Contact Form Submission</h1>
+            <p>Someone has reached out through your portfolio website</p>
+        </div>
+
+        <div class="content">
+            <div class="field">
+                <div class="field-label">👤 Name</div>
+                <div class="field-value">{{name}}</div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">📧 Email Address</div>
+                <div class="field-value">
+                    <a href="mailto:{{email}}" style="color: #3b82f6; text-decoration: none;">{{email}}</a>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="field-label">📋 Subject</div>
+                <div class="field-value">{{subject}}</div>
+            </div>
+
+            <div class="field message-field">
+                <div class="field-label">💬 Message</div>
+                <div class="field-value">{{message}}</div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="mailto:{{email}}?subject=Re: {{subject}}" class="reply-button">
+                📧 Reply to {{name}}
+            </a>
+        </div>
+
+        <div class="metadata">
+            <h3>📊 Submission Details</h3>
+            <div class="metadata-item">
+                <span class="metadata-label">Timestamp:</span>
+                <span class="metadata-value">{{timestamp}}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">IP Address:</span>
+                <span class="metadata-value">{{ipAddress}}</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">User Agent:</span>
+                <span class="metadata-value">{{userAgent}}</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This email was automatically generated by your portfolio contact form.</p>
+            <p>Visit your <a href="{{portfolioUrl}}" style="color: #3b82f6;">portfolio website</a></p>
+        </div>
+    </div>
+</body>
+</html>

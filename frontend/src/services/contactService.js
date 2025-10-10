@@ -114,4 +114,71 @@ export const getContactStats = async () => {
   }
 };
 
+/**
+ * Check email service status
+ * @returns {Promise<Object>} API response with email service status
+ */
+export const checkEmailStatus = async () => {
+  try {
+    const response = await api.get('/api/contact/email-status');
+    return {
+      success: true,
+      data: response.data.data
+    };
+  } catch (error) {
+    console.error('Failed to check email status:', error);
+    return {
+      success: false,
+      error: {
+        message: 'Failed to check email service status',
+        code: 'EMAIL_STATUS_ERROR'
+      }
+    };
+  }
+};
+
+/**
+ * Send test email (development only)
+ * @param {string} email - Email address to send test email to
+ * @returns {Promise<Object>} API response
+ */
+export const sendTestEmail = async (email) => {
+  try {
+    const response = await api.post('/api/contact/test-email', { email });
+    return {
+      success: true,
+      data: response.data.data,
+      message: response.data.message || 'Test email sent successfully!'
+    };
+  } catch (error) {
+    if (error.response) {
+      const { status, data } = error.response;
+      return {
+        success: false,
+        error: {
+          status,
+          message: data.error?.message || 'Failed to send test email',
+          code: data.error?.code || 'UNKNOWN_ERROR'
+        }
+      };
+    } else if (error.request) {
+      return {
+        success: false,
+        error: {
+          message: 'Network error. Please check your connection and try again.',
+          code: 'NETWORK_ERROR'
+        }
+      };
+    } else {
+      return {
+        success: false,
+        error: {
+          message: 'An unexpected error occurred. Please try again.',
+          code: 'UNKNOWN_ERROR'
+        }
+      };
+    }
+  }
+};
+
 export default api;

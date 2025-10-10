@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const Contact = require('../models/Contact');
+const emailService = require('../services/emailService');
 
 const router = express.Router();
 
@@ -115,6 +116,44 @@ router.post('/', contactValidationRules, async (req, res) => {
     // Log successful submission (without sensitive data)
     console.log(`📧 New contact submission received from ${email} at ${new Date().toISOString()}`);
 
+    // Prepare email data
+    const emailData = {
+      name: savedSubmission.name,
+      email: savedSubmission.email,
+      subject: savedSubmission.subject,
+      message: savedSubmission.message,
+      timestamp: savedSubmission.timestamp,
+      ipAddress: savedSubmission.ipAddress,
+      userAgent: savedSubmission.userAgent
+    };
+
+    // Debug email service status
+    console.log('📧 Email service status:', emailService.getStatus());
+
+    // Send email notifications (don't wait for completion to avoid delays)
+    Promise.allSettled([
+      emailService.sendContactNotification(emailData),
+      emailService.sendAutoReply(emailData)
+    ]).then(results => {
+      const [notificationResult, autoReplyResult] = results;
+      
+      if (notificationResult.status === 'fulfilled' && notificationResult.value.success) {
+        console.log('✅ Contact notification email sent successfully');
+      } else {
+        console.error('❌ Failed to send contact notification email:', 
+          notificationResult.reason || notificationResult.value?.error);
+      }
+      
+      if (autoReplyResult.status === 'fulfilled' && autoReplyResult.value.success) {
+        console.log('✅ Auto-reply email sent successfully');
+      } else {
+        console.error('❌ Failed to send auto-reply email:', 
+          autoReplyResult.reason || autoReplyResult.value?.error);
+      }
+    }).catch(error => {
+      console.error('❌ Unexpected error in email sending:', error);
+    });
+
     // Return success response (without sensitive data)
     res.status(201).json({
       success: true,
@@ -163,6 +202,164 @@ router.post('/', contactValidationRules, async (req, res) => {
       error: {
         message: 'An unexpected error occurred. Please try again later.',
         code: 'INTERNAL_SERVER_ERROR'
+      }
+    });
+  }
+});
+
+// POST /api/contact/init-email - Initialize email service (development only)
+router.post('/init-email', async (req, res) => {
+  try {
+    // Only allow in development environment
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({
+        success: false,
+        error: {
+          message: 'Email initialization endpoint is not available in production',
+          code: 'FORBIDDEN'
+        }
+      });
+    }
+
+    console.log('🔄 Manually reinitializing email service...');
+    emailService.reinitialize();
+    
+    const status = emailService.getStatus();
+    const isConnected = await emailService.verifyConnection();
+    
+    res.json({
+      success: true,
+      message: 'Email service reinitialized',
+      data: {
+        status,
+        connected: isConnected
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Email initialization error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Failed to initialize email service',
+        code: 'EMAIL_INIT_ERROR',
+        details: error.message
+      }
+    });
+  }
+});
+
+// POST /api/contact/test-email - Test email functionality (development only)
+router.post('/test-email', async (req, res) => {
+  try {
+    // Only allow in development environment
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({
+        success: false,
+        error: {
+          message: 'Test email endpoint is not available in production',
+          code: 'FORBIDDEN'
+        }
+      });
+    }
+
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Email address is required',
+          code: 'VALIDATION_ERROR'
+        }
+      });
+    }
+
+    // Verify email connection first
+    const connectionVerified = await emailService.verifyConnection();
+    if (!connectionVerified) {
+      return res.status(500).json({
+        success: false,
+        error: {
+          message: 'Email service connection failed',
+          code: 'EMAIL_CONNECTION_ERROR'
+        }
+      });
+    }
+
+    // Send test email
+    const result = await emailService.sendTestEmail(email);
+    
+    if (result.success) {
+      res.json({
+        success: true,
+        message: 'Test email sent successfully',
+        data: {
+          messageId: result.messageId,
+          response: result.response
+        }
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: {
+          message: 'Failed to send test email',
+          code: 'EMAIL_SEND_ERROR',
+          details: result.error
+        }
+      });
+    }
+
+  } catch (error) {
+    console.error('❌ Test email error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'An error occurred while testing email functionality',
+        code: 'INTERNAL_SERVER_ERROR'
+      }
+    });
+  }
+});
+
+// GET /api/contact/email-status - Check email service status
+router.get('/email-status', async (req, res) => {
+  try {
+    // Get service status first
+    const serviceStatus = emailService.getStatus();
+    
+    // Try to verify connection
+    let isConnected = false;
+    let connectionError = null;
+    
+    try {
+      isConnected = await emailService.verifyConnection();
+    } catch (error) {
+      connectionError = error.message;
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        serviceStatus,
+        emailServiceConnected: isConnected,
+        connectionError,
+        emailHost: process.env.EMAIL_HOST || 'Not configured',
+        emailPort: process.env.EMAIL_PORT || 'Not configured',
+        emailUser: process.env.EMAIL_USER ? '***configured***' : 'Not configured',
+        emailFrom: process.env.EMAIL_FROM || 'Not configured',
+        emailTo: process.env.EMAIL_TO || 'Not configured'
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Email status check error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Failed to check email service status',
+        code: 'EMAIL_STATUS_ERROR',
+        details: error.message
       }
     });
   }

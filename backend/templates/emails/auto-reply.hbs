@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank you for contacting me</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #10b981;
+        }
+        .header h1 {
+            color: #10b981;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .header p {
+            color: #64748b;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+        .content {
+            margin-bottom: 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        .message {
+            background-color: #f0fdf4;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+            margin: 20px 0;
+        }
+        .message p {
+            margin: 0 0 15px 0;
+            color: #374151;
+            line-height: 1.7;
+        }
+        .message p:last-child {
+            margin-bottom: 0;
+        }
+        .subject-reference {
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin: 20px 0;
+            font-style: italic;
+            color: #64748b;
+        }
+        .cta-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 10px;
+            transition: background-color 0.2s;
+        }
+        .cta-button:hover {
+            background-color: #2563eb;
+        }
+        .cta-button.secondary {
+            background-color: #6b7280;
+        }
+        .cta-button.secondary:hover {
+            background-color: #4b5563;
+        }
+        .social-links {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+        }
+        .social-links h3 {
+            color: #374151;
+            margin: 0 0 15px 0;
+            font-size: 16px;
+        }
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        .signature {
+            margin: 30px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .signature h3 {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+        .signature p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .cta-button {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Thank You for Reaching Out!</h1>
+            <p>Your message has been received successfully</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Hi {{name}},
+            </div>
+
+            <div class="message">
+                <p>Thank you for taking the time to contact me through my portfolio website! 🎉</p>
+                
+                <p>I have successfully received your message and truly appreciate your interest in my work. Your inquiry is important to me, and I'm excited to connect with you.</p>
+                
+                <p><strong>What happens next?</strong></p>
+                <p>I will personally review your message and get back to you as soon as possible, typically within 24-48 hours. I believe in providing thoughtful and detailed responses, so please bear with me as I craft a proper reply.</p>
+            </div>
+
+            <div class="subject-reference">
+                <strong>Your message subject:</strong> "{{subject}}"
+            </div>
+
+            <div class="cta-section">
+                <a href="{{portfolioUrl}}" class="cta-button">
+                    🌐 Explore My Portfolio
+                </a>
+                <a href="{{portfolioUrl}}#projects" class="cta-button secondary">
+                    💼 View My Projects
+                </a>
+            </div>
+
+            <div class="social-links">
+                <h3>🤝 Let's Connect</h3>
+                <p>While you wait for my response, feel free to connect with me on social media:</p>
+                <a href="https://linkedin.com/in/prince-kumar" class="social-link">LinkedIn</a>
+                <a href="https://github.com/prince-kumar" class="social-link">GitHub</a>
+                <a href="{{portfolioUrl}}" class="social-link">Portfolio</a>
+            </div>
+        </div>
+
+        <div class="signature">
+            <h3>{{ownerName}}</h3>
+            <p>Full-Stack Developer</p>
+            <p>Building innovative web solutions</p>
+        </div>
+
+        <div class="footer">
+            <p><strong>📧 This is an automated response.</strong> Please do not reply to this email.</p>
+            <p>If you need immediate assistance, you can reach me directly at <a href="mailto:{{ownerEmail}}" style="color: #3b82f6;">{{ownerEmail}}</a></p>
+            <p>Visit my <a href="{{portfolioUrl}}" style="color: #3b82f6;">portfolio website</a> for more information about my work.</p>
+        </div>
+    </div>
+</body>
+</html>
