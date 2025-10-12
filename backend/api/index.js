@@ -2,11 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const database = require('./config/database');
+const database = require('../config/database');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -83,26 +82,25 @@ const generalLimiter = rateLimit({
   }
 });
 
-const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // limit each IP to 5 contact form submissions per hour
-  message: {
-    success: false,
-    error: {
-      message: 'Too many contact form submissions, please try again later.',
-      code: 'CONTACT_RATE_LIMIT_EXCEEDED'
-    }
-  }
-});
-
 app.use(generalLimiter);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Import routes
-const contactRoutes = require('./routes/contact');
+// Initialize database connection
+let dbInitialized = false;
+async function initializeDatabase() {
+  if (!dbInitialized) {
+    try {
+      await database.connect();
+      console.log('📊 Database connected for serverless function');
+      dbInitialized = true;
+    } catch (error) {
+      console.error('💥 Failed to connect to database:', error.message);
+    }
+  }
+}
 
 // Basic route
 app.get('/', (req, res) => {
@@ -116,7 +114,7 @@ app.get('/', (req, res) => {
 });
 
 // CORS test endpoint
-app.get('/api/cors-test', (req, res) => {
+app.get('/cors-test', (req, res) => {
   res.json({
     success: true,
     message: 'CORS is working correctly',
@@ -125,19 +123,16 @@ app.get('/api/cors-test', (req, res) => {
   });
 });
 
-// API routes
-app.use('/api/contact', contactLimiter, contactRoutes);
-
 // Health check route
-app.get('/api/health', async (req, res) => {
+app.get('/health', async (req, res) => {
   try {
+    await initializeDatabase();
     const dbStatus = database.getConnectionStatus();
     const dbTest = await database.testConnection();
 
     res.json({
       status: 'OK',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
       database: {
         connected: dbStatus.isConnected,
         readyState: dbStatus.readyState,
@@ -210,52 +205,4 @@ app.use('*', (req, res) => {
   });
 });
 
-// // Initialize database connection and start server
-// async function startServer() {
-//   try {
-//     // Connect to database
-//     await database.connect();
-
-//     // Start the server
-//     app.listen(PORT, () => {
-//       console.log(`🚀 Server running on port ${PORT}`);
-//       console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-//       console.log(`🌐 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
-//     });
-//   } catch (error) {
-//     console.error('💥 Failed to start server:', error.message);
-//     process.exit(1);
-//   }
-// }
-
-// // Start the server
-// startServer();
-
-// module.exports = { app, contactLimiter };
-
-
-// Initialize database connection for serverless
-async function initializeDatabase() {
-  try {
-    await database.connect();
-    console.log('📊 Database connected for serverless function');
-  } catch (error) {
-    console.error('💥 Failed to connect to database:', error.message);
-  }
-}
-
-// Initialize database connection
-initializeDatabase();
-
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🌐 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
-  });
-}
-
-// Export the Express app for Vercel
 module.exports = app;
