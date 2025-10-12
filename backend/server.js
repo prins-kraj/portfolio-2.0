@@ -17,7 +17,58 @@ app.use((req, res, next) => {
 
 // Security middleware
 app.use(helmet());
-app.use(cors());
+
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      // Environment-specific origins
+      process.env.CORS_ORIGIN,
+      process.env.FRONTEND_URL,
+
+      // Development origins
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://localhost:5000',
+
+      // Production origins
+      'https://portfolio-gamma-azure-zm0bqy9dij.vercel.app',
+      'https://portfolio-backend-nu-three.vercel.app',
+
+      // Vercel preview deployments (wildcard pattern)
+    ].filter(Boolean); // Remove undefined values
+
+    // Check for Vercel preview deployments
+    const isVercelPreview = origin && (
+      origin.includes('vercel.app') ||
+      origin.includes('portfolio-gamma-azure') ||
+      origin.includes('portfolio-backend-nu')
+    );
+
+    if (allowedOrigins.includes(origin) || isVercelPreview) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin'
+  ],
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 // Rate limiting - More restrictive for contact form
 const generalLimiter = rateLimit({
@@ -55,7 +106,23 @@ const contactRoutes = require('./routes/contact');
 
 // Basic route
 app.get('/', (req, res) => {
-  res.json({ message: 'Portfolio API Server Running' });
+  res.json({
+    message: 'Portfolio API Server Running',
+    timestamp: new Date().toISOString(),
+    origin: req.get('Origin'),
+    corsOrigin: process.env.CORS_ORIGIN,
+    frontendUrl: process.env.FRONTEND_URL
+  });
+});
+
+// CORS test endpoint
+app.get('/api/cors-test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'CORS is working correctly',
+    origin: req.get('Origin'),
+    timestamp: new Date().toISOString()
+  });
 });
 
 // API routes
@@ -66,9 +133,9 @@ app.get('/api/health', async (req, res) => {
   try {
     const dbStatus = database.getConnectionStatus();
     const dbTest = await database.testConnection();
-    
-    res.json({ 
-      status: 'OK', 
+
+    res.json({
+      status: 'OK',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
       database: {
@@ -98,7 +165,7 @@ app.get('/api/health', async (req, res) => {
 app.use((err, req, res, next) => {
   const timestamp = new Date().toISOString();
   console.error(`[${timestamp}] Error:`, err.stack);
-  
+
   // Handle validation errors
   if (err.name === 'ValidationError') {
     return res.status(400).json({
@@ -110,7 +177,7 @@ app.use((err, req, res, next) => {
       }
     });
   }
-  
+
   // Handle MongoDB errors
   if (err.name === 'MongoError' || err.name === 'MongooseError') {
     return res.status(500).json({
@@ -121,11 +188,11 @@ app.use((err, req, res, next) => {
       }
     });
   }
-  
+
   // Default error
-  res.status(err.status || 500).json({ 
-    success: false, 
-    error: { 
+  res.status(err.status || 500).json({
+    success: false,
+    error: {
       message: err.message || 'Something went wrong!',
       code: err.code || 'INTERNAL_SERVER_ERROR'
     }
@@ -134,9 +201,9 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    error: { 
+  res.status(404).json({
+    success: false,
+    error: {
       message: 'Route not found',
       code: 'NOT_FOUND'
     }
@@ -148,7 +215,7 @@ async function startServer() {
   try {
     // Connect to database
     await database.connect();
-    
+
     // Start the server
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
