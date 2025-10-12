@@ -15,15 +15,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: [
-    process.env.CORS_ORIGIN
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Security middleware
 app.use(helmet());
+app.use(cors());
 
 // Rate limiting - More restrictive for contact form
 const generalLimiter = rateLimit({
