@@ -35,7 +35,7 @@ const corsOptions = {
 
       // Production origins
       'https://portfolio-gamma-azure-zm0bqy9dij.vercel.app',
-      'https://portfolio-backend-nu-three.vercel.app',
+      'https://portfolio-backend-sigma-olive.vercel.app',
 
       // Vercel preview deployments (wildcard pattern)
     ].filter(Boolean); // Remove undefined values
@@ -44,7 +44,7 @@ const corsOptions = {
     const isVercelPreview = origin && (
       origin.includes('vercel.app') ||
       origin.includes('portfolio-gamma-azure') ||
-      origin.includes('portfolio-backend-nu')
+      origin.includes('portfolio-backend-sigma')
     );
 
     if (allowedOrigins.includes(origin) || isVercelPreview) {
