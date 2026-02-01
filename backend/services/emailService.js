@@ -11,7 +11,7 @@ class EmailService {
     this.transporter = null;
     this.templates = new Map();
     this.initialized = false;
-    // Don't initialize immediately, wait for first use
+    // Don't initialize immediately in serverless
   }
 
   // Force reinitialize the transporter
@@ -26,11 +26,11 @@ class EmailService {
     return {
       initialized: this.initialized,
       hasTransporter: !!this.transporter,
-      emailUser: process.env.EMAIL_USER || 'Not set',
+      emailUser: process.env.EMAIL_USER ? '***configured***' : 'Not set',
       emailHost: process.env.EMAIL_HOST || 'Not set',
       emailPort: process.env.EMAIL_PORT || 'Not set',
-      emailFrom: process.env.EMAIL_FROM || 'Not set',
-      emailTo: process.env.EMAIL_TO || 'Not set'
+      emailFrom: process.env.EMAIL_FROM ? '***configured***' : 'Not set',
+      emailTo: process.env.EMAIL_TO ? '***configured***' : 'Not set'
     };
   }
 
@@ -39,7 +39,8 @@ class EmailService {
     try {
       // Check if required environment variables are set
       if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.error('❌ Email credentials not configured. Please set EMAIL_USER and EMAIL_PASS in .env file');
+        console.warn('⚠️ Email credentials not configured. Email functionality will be disabled.');
+        this.initialized = false;
         return;
       }
 
@@ -53,12 +54,15 @@ class EmailService {
         },
         tls: {
           rejectUnauthorized: false // Allow self-signed certificates
-        }
+        },
+        // Serverless optimizations
+        pool: false, // Disable connection pooling for serverless
+        maxConnections: 1,
+        maxMessages: 1
       });
 
       this.initialized = true;
       console.log('📧 Email transporter initialized successfully');
-      console.log(`📧 Email configuration: ${process.env.EMAIL_USER} -> ${process.env.EMAIL_TO}`);
     } catch (error) {
       console.error('❌ Failed to initialize email transporter:', error.message);
       this.initialized = false;
@@ -72,7 +76,7 @@ class EmailService {
       this.ensureInitialized();
       
       if (!this.transporter) {
-        throw new Error('Email transporter not initialized');
+        return false;
       }
 
       await this.transporter.verify();
@@ -92,21 +96,57 @@ class EmailService {
       }
 
       const templatePath = path.join(__dirname, '../templates/emails', `${templateName}.hbs`);
-      const templateContent = await fs.readFile(templatePath, 'utf8');
-      const compiledTemplate = handlebars.compile(templateContent);
       
+      let templateContent;
+      try {
+        templateContent = await fs.readFile(templatePath, 'utf8');
+      } catch (fileError) {
+        console.warn(`⚠️ Template file not found: ${templatePath}, using fallback`);
+        // Return a fallback template
+        return handlebars.compile(this.getFallbackTemplate(templateName));
+      }
+      
+      const compiledTemplate = handlebars.compile(templateContent);
       this.templates.set(templateName, compiledTemplate);
       return compiledTemplate;
     } catch (error) {
       console.error(`❌ Failed to load email template ${templateName}:`, error.message);
       // Return a fallback template
-      return handlebars.compile(`
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>{{subject}}</h2>
-          <p>{{message}}</p>
-        </div>
-      `);
+      return handlebars.compile(this.getFallbackTemplate(templateName));
     }
+  }
+
+  // Get fallback template content
+  getFallbackTemplate(templateName) {
+    if (templateName === 'contact-notification') {
+      return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> {{name}}</p>
+          <p><strong>Email:</strong> {{email}}</p>
+          <p><strong>Subject:</strong> {{subject}}</p>
+          <p><strong>Message:</strong></p>
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">{{message}}</div>
+          <p><strong>Timestamp:</strong> {{timestamp}}</p>
+        </div>
+      `;
+    } else if (templateName === 'auto-reply') {
+      return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2>Thank you for contacting me!</h2>
+          <p>Hi {{name}},</p>
+          <p>Thank you for reaching out through my portfolio contact form!</p>
+          <p>I have received your message regarding "{{subject}}" and will get back to you as soon as possible.</p>
+          <p>Best regards,<br>Prince Kumar</p>
+        </div>
+      `;
+    }
+    return `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>{{subject}}</h2>
+        <p>{{message}}</p>
+      </div>
+    `;
   }
 
   // Ensure transporter is initialized
@@ -123,7 +163,11 @@ class EmailService {
       this.ensureInitialized();
       
       if (!this.transporter) {
-        throw new Error('Email transporter not initialized - check your email configuration');
+        console.warn('⚠️ Email transporter not available - skipping notification email');
+        return {
+          success: false,
+          error: 'Email service not configured'
+        };
       }
 
       const template = await this.loadTemplate('contact-notification');
@@ -185,7 +229,11 @@ class EmailService {
       this.ensureInitialized();
       
       if (!this.transporter) {
-        throw new Error('Email transporter not initialized - check your email configuration');
+        console.warn('⚠️ Email transporter not available - skipping auto-reply email');
+        return {
+          success: false,
+          error: 'Email service not configured'
+        };
       }
 
       const template = await this.loadTemplate('auto-reply');

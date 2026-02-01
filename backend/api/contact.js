@@ -103,12 +103,6 @@ async function initializeDatabase() {
   }
 }
 
-// Middleware to ensure database is connected
-app.use(async (req, res, next) => {
-  await initializeDatabase();
-  next();
-});
-
 // Use contact routes
 app.use('/', contactRoutes);
 
@@ -150,4 +144,8 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app;
+// Serverless function handler
+module.exports = async (req, res) => {
+  await initializeDatabase();
+  return app(req, res);
+};

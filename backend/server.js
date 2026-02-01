@@ -238,23 +238,35 @@ app.use('*', (req, res) => {
 async function initializeDatabase() {
   try {
     await database.connect();
-    console.log('📊 Database connected for serverless function');
+    console.log('📊 Database connected');
   } catch (error) {
     console.error('💥 Failed to connect to database:', error.message);
   }
 }
 
-// Initialize database connection
-initializeDatabase();
+// For local development - only start server if this file is run directly
+if (require.main === module && process.env.NODE_ENV !== 'production') {
+  async function startServer() {
+    try {
+      // Initialize database connection
+      await initializeDatabase();
 
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🌐 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
-  });
+      // Start the server
+      app.listen(PORT, () => {
+        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`🌐 CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:5173'}`);
+      });
+    } catch (error) {
+      console.error('💥 Failed to start server:', error.message);
+      process.exit(1);
+    }
+  }
+
+  startServer();
+} else {
+  // For serverless or when imported as module
+  initializeDatabase();
 }
 
 // Export the Express app for Vercel

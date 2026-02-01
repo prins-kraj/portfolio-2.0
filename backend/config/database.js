@@ -4,30 +4,37 @@ class DatabaseConnection {
   constructor() {
     this.isConnected = false;
     this.retryCount = 0;
-    this.maxRetries = 5;
-    this.retryDelay = 5000; // 5 seconds
+    this.maxRetries = 3; // Reduced for serverless
+    this.retryDelay = 2000; // Reduced delay for serverless
   }
 
   async connect() {
     try {
+      // Check if already connected
+      if (mongoose.connection.readyState === 1) {
+        this.isConnected = true;
+        console.log('✅ MongoDB already connected (reusing connection)');
+        return true;
+      }
+
       const mongoUri = process.env.MONGODB_URI;
       
       if (!mongoUri) {
         throw new Error('MONGODB_URI environment variable is not defined');
       }
 
-      // MongoDB connection options
-      // const options = {
-      //   maxPoolSize: 10, // Maintain up to 10 socket connections
-      //   serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-      //   socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-      //   bufferMaxEntries: 0, // Disable mongoose buffering
-      //   bufferCommands: false, // Disable mongoose buffering
-      //   retryWrites: true, // Enable retryable writes
-      //   w: 'majority', // Write concern for data durability
-      // };
+      // Optimized MongoDB connection options for serverless
+      const options = {
+        maxPoolSize: 5, // Reduced pool size for serverless
+        serverSelectionTimeoutMS: 10000, // Reduced timeout
+        socketTimeoutMS: 30000, // Reduced socket timeout
+        // bufferMaxEntries: 0, // Removed - not supported in newer mongoose
+        // bufferCommands: false, // Removed - not supported in newer mongoose
+        retryWrites: true, // Enable retryable writes
+        w: 'majority', // Write concern for data durability
+      };
 
-      await mongoose.connect(mongoUri);
+      await mongoose.connect(mongoUri, options);
       
       this.isConnected = true;
       this.retryCount = 0;
@@ -50,7 +57,7 @@ class DatabaseConnection {
         console.error(`❌ MongoDB connection failed:`, error.message);
       }
       
-      // Retry logic for recoverable errors
+      // Retry logic for recoverable errors (reduced for serverless)
       if (this.retryCount < this.maxRetries && !error.message.includes('authentication')) {
         this.retryCount++;
         console.log(`🔄 Retrying connection in ${this.retryDelay / 1000} seconds... (Attempt ${this.retryCount}/${this.maxRetries})`);
@@ -70,6 +77,12 @@ class DatabaseConnection {
 
   async disconnect() {
     try {
+      // Don't disconnect in serverless - let Vercel handle it
+      if (process.env.VERCEL) {
+        console.log('📤 Skipping disconnect in serverless environment');
+        return;
+      }
+      
       await mongoose.disconnect();
       this.isConnected = false;
       console.log('📤 MongoDB disconnected successfully');
@@ -132,16 +145,18 @@ mongoose.connection.on('disconnected', () => {
   console.log('📤 Mongoose disconnected from MongoDB');
 });
 
-// Graceful shutdown handling
-process.on('SIGINT', async () => {
-  try {
-    await mongoose.connection.close();
-    console.log('📤 MongoDB connection closed through app termination');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error during graceful shutdown:', error.message);
-    process.exit(1);
-  }
-});
+// Graceful shutdown handling (skip in serverless)
+if (!process.env.VERCEL) {
+  process.on('SIGINT', async () => {
+    try {
+      await mongoose.connection.close();
+      console.log('📤 MongoDB connection closed through app termination');
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Error during graceful shutdown:', error.message);
+      process.exit(1);
+    }
+  });
+}
 
 module.exports = new DatabaseConnection();
