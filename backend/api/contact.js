@@ -223,6 +223,11 @@ module.exports = async (req, res) => {
     ]).then(results => {
       const [notificationResult, autoReplyResult] = results;
       
+      console.log('📧 Email sending results:', {
+        notification: notificationResult.status,
+        autoReply: autoReplyResult.status
+      });
+      
       if (notificationResult.status === 'fulfilled' && notificationResult.value.success) {
         console.log('✅ Contact notification email sent successfully');
       } else {

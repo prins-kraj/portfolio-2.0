@@ -160,6 +160,7 @@ class EmailService {
   // Send contact form notification email
   async sendContactNotification(contactData) {
     try {
+      console.log('📧 Starting sendContactNotification...');
       this.ensureInitialized();
       
       if (!this.transporter) {
@@ -170,6 +171,7 @@ class EmailService {
         };
       }
 
+      console.log('📧 Loading contact-notification template...');
       const template = await this.loadTemplate('contact-notification');
       
       const emailData = {
@@ -186,6 +188,7 @@ class EmailService {
         portfolioUrl: process.env.FRONTEND_URL || 'http://localhost:5173'
       };
 
+      console.log('📧 Compiling email template...');
       const htmlContent = template(emailData);
 
       const mailOptions = {
@@ -205,6 +208,7 @@ class EmailService {
         }
       };
 
+      console.log('📧 Sending email to:', process.env.EMAIL_TO);
       const result = await this.transporter.sendMail(mailOptions);
       
       console.log('✅ Contact notification email sent successfully:', result.messageId);
@@ -216,6 +220,7 @@ class EmailService {
 
     } catch (error) {
       console.error('❌ Failed to send contact notification email:', error.message);
+      console.error('❌ Error stack:', error.stack);
       return {
         success: false,
         error: error.message
@@ -226,6 +231,7 @@ class EmailService {
   // Send auto-reply email to the contact form submitter
   async sendAutoReply(contactData) {
     try {
+      console.log('📧 Starting sendAutoReply...');
       this.ensureInitialized();
       
       if (!this.transporter) {
@@ -236,6 +242,7 @@ class EmailService {
         };
       }
 
+      console.log('📧 Loading auto-reply template...');
       const template = await this.loadTemplate('auto-reply');
       
       const emailData = {
@@ -246,6 +253,7 @@ class EmailService {
         ownerEmail: process.env.EMAIL_TO
       };
 
+      console.log('📧 Compiling auto-reply template...');
       const htmlContent = template(emailData);
 
       const mailOptions = {
@@ -264,6 +272,7 @@ class EmailService {
         }
       };
 
+      console.log('📧 Sending auto-reply to:', contactData.email);
       const result = await this.transporter.sendMail(mailOptions);
       
       console.log('✅ Auto-reply email sent successfully:', result.messageId);
@@ -275,6 +284,7 @@ class EmailService {
 
     } catch (error) {
       console.error('❌ Failed to send auto-reply email:', error.message);
+      console.error('❌ Error stack:', error.stack);
       return {
         success: false,
         error: error.message
