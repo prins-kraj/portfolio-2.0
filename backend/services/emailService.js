@@ -40,9 +40,18 @@ class EmailService {
       // Check if required environment variables are set
       if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn('⚠️ Email credentials not configured. Email functionality will be disabled.');
+        console.warn('⚠️ EMAIL_USER:', process.env.EMAIL_USER ? 'Set' : 'Not set');
+        console.warn('⚠️ EMAIL_PASS:', process.env.EMAIL_PASS ? 'Set' : 'Not set');
         this.initialized = false;
         return;
       }
+
+      console.log('📧 Creating email transporter with config:', {
+        host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.EMAIL_PORT) || 587,
+        secure: process.env.EMAIL_SECURE === 'true',
+        user: process.env.EMAIL_USER
+      });
 
       this.transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST || 'smtp.gmail.com',
@@ -58,13 +67,18 @@ class EmailService {
         // Serverless optimizations
         pool: false, // Disable connection pooling for serverless
         maxConnections: 1,
-        maxMessages: 1
+        maxMessages: 1,
+        // Add timeout settings
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000,
+        socketTimeout: 10000
       });
 
       this.initialized = true;
       console.log('📧 Email transporter initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize email transporter:', error.message);
+      console.error('❌ Error stack:', error.stack);
       this.initialized = false;
       this.transporter = null;
     }

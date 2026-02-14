@@ -216,34 +216,33 @@ module.exports = async (req, res) => {
       userAgent: savedSubmission.userAgent
     };
 
-    // Send email notifications (don't wait for completion)
-    Promise.allSettled([
+    // Send email notifications (wait for completion)
+    console.log('📧 Sending emails...');
+    const emailResults = await Promise.allSettled([
       emailService.sendContactNotification(emailData),
       emailService.sendAutoReply(emailData)
-    ]).then(results => {
-      const [notificationResult, autoReplyResult] = results;
-      
-      console.log('📧 Email sending results:', {
-        notification: notificationResult.status,
-        autoReply: autoReplyResult.status
-      });
-      
-      if (notificationResult.status === 'fulfilled' && notificationResult.value.success) {
-        console.log('✅ Contact notification email sent successfully');
-      } else {
-        console.error('❌ Failed to send contact notification email:', 
-          notificationResult.reason || notificationResult.value?.error);
-      }
-      
-      if (autoReplyResult.status === 'fulfilled' && autoReplyResult.value.success) {
-        console.log('✅ Auto-reply email sent successfully');
-      } else {
-        console.error('❌ Failed to send auto-reply email:', 
-          autoReplyResult.reason || autoReplyResult.value?.error);
-      }
-    }).catch(error => {
-      console.error('❌ Unexpected error in email sending:', error);
+    ]);
+    
+    const [notificationResult, autoReplyResult] = emailResults;
+    
+    console.log('📧 Email sending results:', {
+      notification: notificationResult.status,
+      autoReply: autoReplyResult.status
     });
+    
+    if (notificationResult.status === 'fulfilled' && notificationResult.value.success) {
+      console.log('✅ Contact notification email sent successfully');
+    } else {
+      console.error('❌ Failed to send contact notification email:', 
+        notificationResult.reason || notificationResult.value?.error);
+    }
+    
+    if (autoReplyResult.status === 'fulfilled' && autoReplyResult.value.success) {
+      console.log('✅ Auto-reply email sent successfully');
+    } else {
+      console.error('❌ Failed to send auto-reply email:', 
+        autoReplyResult.reason || autoReplyResult.value?.error);
+    }
 
     // Return success response
     res.status(201).json({
