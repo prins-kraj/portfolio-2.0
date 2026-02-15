@@ -7,15 +7,18 @@ export const experience = [
     location: "India",
     type: "Full-time",
     description: [
+      "ManageX Storage Inspector (Azure Tenant Management System – Enterprise Solution) : A cloud-based Azure tenant storage and enterprise cost analysis platform by developing cost calculator and predictive forecasting modules (A1/A3/A5 licensing) using Azure services, REST APIs, Node.js, and JavaScript with a focus on performance optimization and scalable backend integration.",
       "HRMS Portal: Developed comprehensive models for leave management and employee management using Node.js with Express.js, MongoDB, React.js, and Tailwind CSS, improving HR workflow efficiency by 40%.",
       "Project Management Portal: Built a robust back-end using Flask to manage notifications, projects, user interactions, and skill matching, serving 500+ active users.",
       "App Modernization: Collaborated with Microsoft to modernize a presentation platform with React.js, Redux, and integrated media controllers, enhancing user experience and performance."
     ],
-    technologies: ["Node.js", "React.js", "MongoDB", "Express.js", "Flask", "Redux", "Tailwind CSS"],
+    technologies: ["Node.js", "React.js", "MongoDB", "Express.js", "FastAPI", "Redux", "Tailwind CSS", "Azure", "Redis", "Material UI", "Problem Solving"],
     achievements: [
-      "Improved HR workflow efficiency by 40%",
-      "Built systems serving 500+ active users",
-      "Collaborated with Microsoft on modernization project"
+      "Built and scaled enterprise backend systems supporting 500+ active users with secure REST APIs.",
+      "	Developed Azure cost forecasting models improving enterprise budget planning and license optimization.",
+      "	Modernized a legacy platform using React and Redux, enhancing performance and scalability.",
+      "Implemented secure authentication and role-based access control for multi-user enterprise applications.",
+      "Designed automated HR and project management workflows reducing manual operational effort.",
     ]
   },
   {
@@ -47,14 +50,14 @@ export const education = [
     institution: "National Institute of Technology Agartala",
     duration: "2020 – 2024",
     grade:{
-      number: "88.8",
+      number: "8.63",
       type: "CGPA"
     },
     location: "Agartala, Tripura, India",
     achievements: [
       "Specialized in Software Development and Data Structures",
       "Active participant in coding competitions",
-      "Member of Computer Science Society"
+      "Member of Development Community Club"
     ]
   },
   {

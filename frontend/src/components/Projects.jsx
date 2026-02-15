@@ -63,7 +63,7 @@ const Projects = () => {
       {/* Filter Buttons */}
       <div className="mb-8 xs:mb-10 sm:mb-12 space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Category Filters */}
-        <motion.div 
+        {/* <motion.div 
           className="text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ const Projects = () => {
               </button>
             ))}
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Technology Filters */}
         <motion.div 
