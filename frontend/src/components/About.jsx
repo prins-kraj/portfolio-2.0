@@ -73,7 +73,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="section-padding bg-gradient-to-b from-background to-surface">
+    <section id="about" className="section-padding bg-gradient-to-b from-background to-surface scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
       <div className="container">
         <motion.div
           variants={containerVariants}

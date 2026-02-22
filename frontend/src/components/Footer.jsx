@@ -23,25 +23,25 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-surface border-t border-border">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-surface border-t border-border safe-bottom">
+      <div className="max-w-7xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="py-8 xs:py-10 sm:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 xs:gap-7 sm:gap-8">
             
             {/* About Section */}
             <div className="lg:col-span-2">
-              <h3 className="text-xl font-heading font-semibold text-text-primary mb-4">
+              <h3 className="text-lg xs:text-xl font-heading font-semibold text-text-primary mb-3 xs:mb-4">
                 {personalInfo.name}
               </h3>
-              <p className="text-text-secondary mb-6 leading-relaxed">
+              <p className="text-text-secondary text-sm xs:text-base mb-4 xs:mb-5 sm:mb-6 leading-relaxed">
                 {personalInfo.title} passionate about creating innovative web solutions 
                 and mentoring aspiring developers. Always eager to take on new challenges 
                 and contribute to meaningful projects.
               </p>
               
               {/* Social Links */}
-              <div className="flex space-x-4">
+              <div className="flex flex-wrap gap-3 xs:gap-4">
                 {socialLinks.map((link, index) => {
                   const IconComponent = getIconComponent(link.icon);
                   return (
@@ -50,10 +50,10 @@ const Footer = () => {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary transition-all duration-300 hover:scale-110"
+                      className="w-9 h-9 xs:w-10 xs:h-10 bg-background border border-border rounded-lg flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary transition-all duration-300 hover:scale-110 touch-manipulation"
                       aria-label={link.name}
                     >
-                      <IconComponent className="text-lg" />
+                      <IconComponent className="text-base xs:text-lg" />
                     </a>
                   );
                 })}
@@ -62,10 +62,10 @@ const Footer = () => {
 
             {/* Quick Links */}
             <div>
-              <h4 className="text-lg font-heading font-semibold text-text-primary mb-4">
+              <h4 className="text-base xs:text-lg font-heading font-semibold text-text-primary mb-3 xs:mb-4">
                 Quick Links
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-1.5 xs:space-y-2">
                 {[
                   { name: 'About', href: '#about' },
                   { name: 'Experience', href: '#experience' },
@@ -76,7 +76,7 @@ const Footer = () => {
                   <li key={item.name}>
                     <a
                       href={item.href}
-                      className="text-text-secondary hover:text-primary transition-colors duration-300"
+                      className="text-text-secondary text-sm xs:text-base hover:text-primary transition-colors duration-300 touch-manipulation inline-block py-1"
                     >
                       {item.name}
                     </a>
@@ -87,24 +87,24 @@ const Footer = () => {
 
             {/* Contact Info */}
             <div>
-              <h4 className="text-lg font-heading font-semibold text-text-primary mb-4">
+              <h4 className="text-base xs:text-lg font-heading font-semibold text-text-primary mb-3 xs:mb-4">
                 Get In Touch
               </h4>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <FaEnvelope className="text-primary flex-shrink-0" />
+              <div className="space-y-2.5 xs:space-y-3">
+                <div className="flex items-start space-x-2.5 xs:space-x-3">
+                  <FaEnvelope className="text-primary flex-shrink-0 mt-0.5 text-sm xs:text-base" />
                   <a 
                     href={`mailto:${personalInfo.email}`}
-                    className="text-text-secondary hover:text-primary transition-colors duration-300 text-sm"
+                    className="text-text-secondary hover:text-primary transition-colors duration-300 text-xs xs:text-sm break-words touch-manipulation"
                   >
                     {personalInfo.email}
                   </a>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <FaPhone className="text-primary flex-shrink-0" />
+                <div className="flex items-start space-x-2.5 xs:space-x-3">
+                  <FaPhone className="text-primary flex-shrink-0 mt-0.5 text-sm xs:text-base" />
                   <a 
                     href={`tel:${personalInfo.phone}`}
-                    className="text-text-secondary hover:text-primary transition-colors duration-300 text-sm"
+                    className="text-text-secondary hover:text-primary transition-colors duration-300 text-xs xs:text-sm break-words touch-manipulation"
                   >
                     {personalInfo.phone}
                   </a>
@@ -115,15 +115,18 @@ const Footer = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className="border-t border-border py-6">
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0">
+        <div className="border-t border-border py-4 xs:py-5 sm:py-6">
+          <div className="flex flex-col md:flex-row justify-center items-center space-y-3 xs:space-y-4 md:space-y-0">
             
             {/* Copyright */}
-            <div className="text-text-secondary text-sm">
-              <p className="flex items-center">
-                © {currentYear} {personalInfo.name}. Made with 
-                <FaHeart className="text-red-500 mx-1 animate-pulse" /> 
-                and React.js
+            <div className="text-text-secondary text-xs xs:text-sm text-center">
+              <p className="flex items-center flex-wrap justify-center gap-1">
+                <span>© {currentYear} {personalInfo.name}.</span>
+                <span className="flex items-center gap-1">
+                  Made with 
+                  <FaHeart className="text-red-500 animate-pulse" /> 
+                  and React.js
+                </span>
               </p>
             </div>
 

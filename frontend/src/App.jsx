@@ -43,47 +43,47 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-text-primary">
+    <div className="min-h-screen bg-background text-text-primary overflow-x-hidden">
       <Header />
       
-      <main className="relative">
-        <section id="home">
+      <main className="relative w-full">
+        <section id="home" className="scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <Hero />
         </section>
         
         <About />
         
-        <section id="experience" className="section-padding bg-surface/30">
+        <section id="experience" className="section-padding bg-surface/30 scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <div className="container">
             <Experience />
           </div>
         </section>
         
-        <section id="projects" className="section-padding">
+        <section id="projects" className="section-padding scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <div className="container">
             <Projects />
           </div>
         </section>
         
-        <section id="skills" className="section-padding bg-surface/30">
+        <section id="skills" className="section-padding bg-surface/30 scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <div className="container">
             <Skills />
           </div>
         </section>
         
-        <section id="education" className="section-padding">
+        <section id="education" className="section-padding scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <div className="container">
             <Education />
           </div>
         </section>
         
-        <section id="achievements" className="section-padding bg-surface/30">
+        <section id="achievements" className="section-padding bg-surface/30 scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <div className="container">
             <Achievements />
           </div>
         </section>
         
-        <section id="contact" className="section-padding">
+        <section id="contact" className="section-padding scroll-mt-14 xs:scroll-mt-16 lg:scroll-mt-20">
           <div className="container">
             <Contact />
           </div>
